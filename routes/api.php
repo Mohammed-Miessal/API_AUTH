@@ -15,10 +15,10 @@ use App\Http\Controllers\API\AuthController;
 |
 */
 
-Route::post('/register', [AuthController::class, 'register'])->name('register');
-Route::post('/login', [AuthController::class, 'login'])->name('login');
-Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
-Route::post('/refresh', [AuthController::class, 'refresh'])->name('refresh');
+// Route::post('/register', [AuthController::class, 'register'])->name('register');
+// Route::post('/login', [AuthController::class, 'login'])->name('login');
+// Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+// Route::post('/refresh', [AuthController::class, 'refresh'])->name('refresh');
 
 
 
@@ -27,9 +27,9 @@ Route::post('/refresh', [AuthController::class, 'refresh'])->name('refresh');
 //     return $request->user();
 // });
 
-// Route::controller(AuthController::class)->group(function () {
-//     Route::post('login', 'login');
-//     Route::post('register', 'register');
-//     Route::post('logout', 'logout');
-//     Route::post('refresh', 'refresh');
-// });
+Route::controller(AuthController::class)->group(function () {
+    Route::post('login', 'login')->name('login');
+    Route::post('register', 'register')->name('register');
+    Route::post('logout', 'logout')->name('logout');
+    Route::post('refresh', 'refresh')->name('refresh');
+});

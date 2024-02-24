@@ -8,12 +8,21 @@ use App\Models\Role;
 
 class RoleController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth:api');
+    }
+
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
         //
+        $roles = Role::all();
+        return response()->json([
+            'roles' => $roles
+        ]);
     }
 
     /**
@@ -29,7 +38,15 @@ class RoleController extends Controller
      */
     public function store(StoreRoleRequest $request)
     {
-        //
+
+        $role = Role::create([
+            'name' => $request->name,
+        ]);
+
+        return response()->json([
+            'message' => 'Role created successfully',
+            'role' => $role
+        ]);
     }
 
     /**
@@ -38,6 +55,10 @@ class RoleController extends Controller
     public function show(Role $role)
     {
         //
+        $role = Role::find($role->id);
+        return response()->json([
+            'role' => $role
+        ]);
     }
 
     /**
@@ -46,6 +67,10 @@ class RoleController extends Controller
     public function edit(Role $role)
     {
         //
+        $role = Role::find($role->id);
+        return response()->json([
+            'role' => $role
+        ]);
     }
 
     /**
@@ -54,6 +79,13 @@ class RoleController extends Controller
     public function update(UpdateRoleRequest $request, Role $role)
     {
         //
+        $role = Role::find($role->id);
+        $role->name = $request->name;
+        $role->save();
+        return response()->json([
+            'message' => 'Role updated successfully',
+            'role' => $role
+        ]);
     }
 
     /**
@@ -61,6 +93,10 @@ class RoleController extends Controller
      */
     public function destroy(Role $role)
     {
-        //
+        // 
+        $role->delete();
+        return response()->json([
+            'message' => 'Role deleted successfully'
+        ]);
     }
 }

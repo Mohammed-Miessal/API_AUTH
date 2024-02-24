@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\AuthController;
+use App\Http\Controllers\RoleController;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,25 +16,24 @@ use App\Http\Controllers\API\AuthController;
 |
 */
 
-// Route::post('/register', [AuthController::class, 'register'])->name('register');
-// Route::post('/login', [AuthController::class, 'login'])->name('login');
-// Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
-// Route::post('/refresh', [AuthController::class, 'refresh'])->name('refresh');
 
 
-
-
-// Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-//     return $request->user();
-// });
-
-Route::controller(AuthController::class)->group(function () {
-    Route::post('login', 'login')->name('login');
-    Route::post('register', 'register')->name('register');
-    Route::post('logout', 'logout')->name('logout');
-    Route::post('refresh', 'refresh')->name('refresh');
-    Route::get('infos', 'infos')->name('infos.user');
-
+Route::group([], function () {
+    Route::post('login', [AuthController::class, 'login'])->name('login');
+    Route::post('register', [AuthController::class, 'register'])->name('register');
+    Route::post('logout', [AuthController::class, 'logout'])->name('logout');
+    Route::post('refresh', [AuthController::class, 'refresh'])->name('refresh');
+    // Route::get('user/infos', [AuthController::class, 'infos'])->name('infos.user');
 });
 
 
+
+Route::prefix('role')->group(function () {
+    Route::get('/', [RoleController::class, 'index'])->name('role.index');
+    Route::get('/index', [RoleController::class, 'index'])->name('role.index');
+    Route::post('/store', [RoleController::class, 'store'])->name('role.store');
+    Route::get('edit/{role}', [RoleController::class, 'edit'])->name('role.edit');
+    Route::put('/update/{role}', [RoleController::class, 'update'])->name('role.update');
+    Route::get('/show/{role}', [RoleController::class, 'show'])->name('role.show');
+    Route::delete('/delete/{role}', [RoleController::class, 'destroy'])->name('role.delete');
+});

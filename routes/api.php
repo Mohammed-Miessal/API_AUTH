@@ -15,25 +15,16 @@ use App\Http\Controllers\API\AuthController;
 |
 */
 
-// Route::post('/register', [AuthController::class, 'register'])->name('register');
-// Route::post('/login', [AuthController::class, 'login'])->name('login');
-// Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
-// Route::post('/refresh', [AuthController::class, 'refresh'])->name('refresh');
-
-
 
 
 // Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 //     return $request->user();
 // });
 
-Route::controller(AuthController::class)->group(function () {
-    Route::post('login', 'login')->name('login');
-    Route::post('register', 'register')->name('register');
-    Route::post('logout', 'logout')->name('logout');
-    Route::post('refresh', 'refresh')->name('refresh');
-    Route::get('infos', 'infos')->name('infos.user');
-
+Route::group([], function () {
+    Route::post('login', [AuthController::class, 'login'])->name('login');
+    Route::post('register', [AuthController::class, 'register'])->name('register');
+    Route::post('logout', [AuthController::class, 'logout'])->name('logout');
+    Route::post('refresh', [AuthController::class, 'refresh'])->name('refresh');
+    // Route::get('user/infos', [AuthController::class, 'infos'])->name('infos.user');
 });
-
-

@@ -71,6 +71,8 @@ class AuthController extends Controller
         ]);
     }
 
+
+
     public function refresh()
     {
         return response()->json([
@@ -80,5 +82,11 @@ class AuthController extends Controller
                 'type' => 'bearer',
             ]
         ]);
+    }
+
+    
+    public function infos(Request $request)
+    {
+        return response()->json($request->user());
     }
 }

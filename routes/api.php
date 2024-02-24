@@ -32,4 +32,8 @@ Route::controller(AuthController::class)->group(function () {
     Route::post('register', 'register')->name('register');
     Route::post('logout', 'logout')->name('logout');
     Route::post('refresh', 'refresh')->name('refresh');
+    Route::get('infos', 'infos')->name('infos.user');
+
 });
+
+

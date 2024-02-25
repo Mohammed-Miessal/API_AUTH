@@ -47,6 +47,8 @@ class AuthController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:6',
+            'role_id' => 'required|array',
+            'role_id.*' => 'integer|exists:roles,id',
         ]);
 
         $user = User::create([
@@ -54,6 +56,8 @@ class AuthController extends Controller
             'email' => $request->email,
             'password' => Hash::make($request->password),
         ]);
+
+        $user->roles()->sync($request->role_id);
 
         return response()->json([
             'message' => 'User created successfully',

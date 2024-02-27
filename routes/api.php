@@ -38,3 +38,12 @@ Route::prefix('role')->group(function () {
     Route::get('/show/{role}', [RoleController::class, 'show'])->name('role.show');
     Route::delete('/delete/{role}', [RoleController::class, 'destroy'])->name('role.delete');
 });
+
+
+Route::group(['middleware' => 'role:Super Admin'], function() {
+    Route::get('list' , [AuthController::class, 'list'])->name('role.list');
+ });
+ 
+ Route::group(['middleware' => 'role:user'], function() {
+    //
+ });

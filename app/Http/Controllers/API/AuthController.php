@@ -15,31 +15,6 @@ class AuthController extends Controller
         $this->middleware('auth:api', ['except' => ['login', 'register']]);
     }
 
-    public function login(Request $request)
-    {
-        $request->validate([
-            'email' => 'required|string|email',
-            'password' => 'required|string',
-        ]);
-        $credentials = $request->only('email', 'password');
-        $token = Auth::attempt($credentials);
-
-        if (!$token) {
-            return response()->json([
-                'message' => 'Unauthorized',
-            ], 401);
-        }
-
-        $user = Auth::user();
-        return response()->json([
-            'user' => $user,
-            'authorization' => [
-                'token' => $token,
-                'type' => 'bearer',
-            ]
-        ]);
-    }
-
 
     public function register(Request $request)
     {
@@ -49,6 +24,8 @@ class AuthController extends Controller
             'password' => 'required|string|min:6',
             'role_id' => 'required|array',
             'role_id.*' => 'integer|exists:roles,id',
+            'permission_id' => 'required|array',
+            'permission_id.*' => 'integer|exists:permissions,id',
         ]);
 
         $user = User::create([
@@ -58,6 +35,8 @@ class AuthController extends Controller
         ]);
 
         $user->roles()->sync($request->role_id);
+        $user->permissions()->sync($request->permission_id);
+
 
         return response()->json([
             'message' => 'User created successfully',
@@ -66,6 +45,35 @@ class AuthController extends Controller
     }
 
 
+    public function login(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|string|email',
+            'password' => 'required|string',
+        ]);
+
+        $credentials = $request->only('email', 'password');
+        $token = Auth::attempt($credentials);
+
+        if (!$token) {
+            return response()->json([
+                'message' => 'Unauthorized',
+            ], 401);
+        }
+
+        $role = Auth::user()->roles;
+        $permissios = Auth::user()->permissions;
+
+        return response()->json([
+            'message' => 'Successfully login ',
+            'role' =>  $role,
+            'permissios' => $permissios,
+            'authorization' => [
+                'token' => $token,
+                'type' => 'bearer',
+            ]
+        ]);
+    }
 
     public function logout()
     {
@@ -87,5 +95,13 @@ class AuthController extends Controller
                 'type' => 'bearer',
             ]
         ]);
+    }
+
+    public function list()
+    {
+        return response()->json([
+            'message' => 'List of users',
+            'users' => User::all(),
+        ], 200);
     }
 }

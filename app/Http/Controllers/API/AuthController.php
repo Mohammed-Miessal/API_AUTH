@@ -80,6 +80,7 @@ class AuthController extends Controller
     public function refresh()
     {
         return response()->json([
+            'message' => 'Token refreshed successfully',
             'user' => Auth::user(),
             'authorisation' => [
                 'token' => Auth::refresh(),

@@ -9,7 +9,6 @@ use App\Models\Role;
 class RoleController extends Controller
 {
 
-
     /**
      * Display a listing of the resource.
      */
@@ -35,6 +34,11 @@ class RoleController extends Controller
      */
     public function store(StoreRoleRequest $request)
     {
+        if ($request->name == 'Super Admin' && auth()->user()->role != 'Super Admin') {
+            return response()->json([
+                'message' => 'You do not have permission to create the Super Admin role'
+            ], 403);
+        }
 
         $role = Role::create([
             'name' => $request->name,
@@ -75,6 +79,11 @@ class RoleController extends Controller
      */
     public function update(UpdateRoleRequest $request, Role $role)
     {
+        if ($role->name == 'Super Admin' && auth()->user()->role != 'Super Admin') {
+            return response()->json([
+                'message' => 'You do not have permission to updte the Super Admin role'
+            ], 403);
+        }
 
         $role = Role::find($role->id);
         $role->name = $request->name;
@@ -90,6 +99,11 @@ class RoleController extends Controller
      */
     public function destroy(Role $role)
     {
+        if ($role->name == 'Super Admin' && auth()->user()->role != 'Super Admin') {
+            return response()->json([
+                'message' => 'You do not have permission to delete the Super Admin role'
+            ], 403);
+        }
 
         $role->delete();
         return response()->json([

@@ -11,33 +11,24 @@ return new class extends Migration
      */
     public function up(): void
     {
+
         // Schema::create('permission_role', function (Blueprint $table) {
         //     $table->id();
-        //     $table->unsignedBigInteger('permission_id');
-        //     $table->unsignedBigInteger('role_id');
-
-        //     $table->foreignId('permission_id')->references('id')->on('permissions')->onDelete('cascade')->onUpdate('cascade');
-        //     $table->foreignId('role_id')->references('id')->on('roles')->onDelete('cascade')->onUpdate('cascade');
-
+            
+        //     $table->foreignId('permission_id')->constrained()->onDelete('cascade')->onUpdate('cascade');
+        //     $table->foreignId('role_id')->constrained()->onDelete('cascade')->onUpdate('cascade');
+            
         //     $table->timestamps();
+            
+        //     $table->unique(['permission_id', 'role_id']); 
         // });
-        Schema::create('permission_role', function (Blueprint $table) {
-            $table->id();
-            
-            $table->foreignId('permission_id')->constrained()->onDelete('cascade')->onUpdate('cascade');
-            $table->foreignId('role_id')->constrained()->onDelete('cascade')->onUpdate('cascade');
-            
-            $table->timestamps();
-            
-            $table->unique(['permission_id', 'role_id']); 
-        });
     }
 
     /**
      * Reverse the migrations.
      */
-    public function down(): void
-    {
-        Schema::dropIfExists('permission_role');
-    }
+    // public function down(): void
+    // {
+    //     Schema::dropIfExists('permission_role');
+    // }
 };

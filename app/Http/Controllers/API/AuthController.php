@@ -13,6 +13,7 @@ class AuthController extends Controller
     public function __construct()
     {
         $this->middleware('auth:api', ['except' => ['login', 'register']]);
+        // $this->middleware('role:Super Admin', ['only' => ['register']]); // if you want to allow only super admin to register new user
     }
 
 
@@ -66,8 +67,8 @@ class AuthController extends Controller
 
         return response()->json([
             'message' => 'Successfully login ',
-            'role' =>  $role,
-            'permissios' => $permissios,
+            // 'role' =>  $role,
+            // 'permissios' => $permissios,
             'authorization' => [
                 'token' => $token,
                 'type' => 'bearer',
@@ -95,13 +96,5 @@ class AuthController extends Controller
                 'type' => 'bearer',
             ]
         ]);
-    }
-
-    public function list()
-    {
-        return response()->json([
-            'message' => 'List of users',
-            'users' => User::all(),
-        ], 200);
     }
 }

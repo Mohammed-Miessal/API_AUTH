@@ -16,16 +16,14 @@ class RoleMiddleware
     public function handle(
         Request $request,
         Closure $next,
-        $role,
-        $permission = null
+        ...$roles
     ): Response {
-        if (!$request->user()->hasRole($role)) {
-            abort(404);
-        }
-        if ($permission !== null && !$request->user()->can($permission)) {
-            abort(404);
+        foreach ($roles as $role) {
+            if ($request->user()->hasRole($role)) {
+                return $next($request);
+            }
         }
 
-        return $next($request);
+        abort(403, 'Forbidden. You do not have the required role.');
     }
 }

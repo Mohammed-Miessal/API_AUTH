@@ -13,7 +13,10 @@ class PermissionController extends Controller
      */
     public function index()
     {
-        //
+        $permissions = Permission::all();
+        return response()->json([
+            'permissions' => $permissions
+        ]);
     }
 
     /**
@@ -29,7 +32,14 @@ class PermissionController extends Controller
      */
     public function store(StorePermissionRequest $request)
     {
-        //
+        $permission = Permission::create([
+            'name' => $request->name,
+        ]);
+
+        return response()->json([
+            'message' => 'Permission created successfully',
+            'permission' => $permission
+        ]);
     }
 
     /**
@@ -37,7 +47,10 @@ class PermissionController extends Controller
      */
     public function show(Permission $permission)
     {
-        //
+        $permission = Permission::find($permission->id);
+        return response()->json([
+            'permission' => $permission
+        ]);
     }
 
     /**
@@ -45,7 +58,10 @@ class PermissionController extends Controller
      */
     public function edit(Permission $permission)
     {
-        //
+        $permission = Permission::find($permission->id);
+        return response()->json([
+            'permission' => $permission
+        ]);
     }
 
     /**
@@ -53,7 +69,13 @@ class PermissionController extends Controller
      */
     public function update(UpdatePermissionRequest $request, Permission $permission)
     {
-        //
+        $permission = Permission::find($permission->id);
+        $permission->name = $request->name;
+        $permission->save();
+        return response()->json([
+            'message' => 'Permission updated successfully',
+            'permission' => $permission
+        ]);
     }
 
     /**
@@ -61,6 +83,9 @@ class PermissionController extends Controller
      */
     public function destroy(Permission $permission)
     {
-        //
+        $permission->delete();
+        return response()->json([
+            'message' => 'Permission deleted successfully',
+        ]);
     }
 }

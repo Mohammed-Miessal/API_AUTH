@@ -7,6 +7,7 @@ use App\Models\Permission;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Schema;
+use App\Repositories\AuthRepository;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -16,6 +17,9 @@ class AppServiceProvider extends ServiceProvider
     public function register(): void
     {
         //
+        $this->app->bind(AuthRepository::class, function ($app) {
+            return new AuthRepository();
+        });
     }
 
     /**

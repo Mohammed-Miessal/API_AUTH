@@ -2,42 +2,27 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Models\User;
-use Illuminate\Http\Request;
+use App\Http\Requests\LoginRequest;
 use App\Http\Controllers\Controller;
+use App\Repositories\AuthRepository;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use App\Http\Requests\RegisterRequest;
 
 class AuthController extends Controller
 {
-    public function __construct()
+    protected $authRepository;
+
+    public function __construct(AuthRepository $authRepository)
     {
         $this->middleware('auth:api', ['except' => ['login', 'register']]);
-        // $this->middleware('role:Super Admin', ['only' => ['register']]); // if you want to allow only super admin to register new user
+        $this->authRepository = $authRepository;
     }
 
-
-    public function register(Request $request)
+    public function register(RegisterRequest $request)
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:6',
-            'role_id' => 'required|array',
-            'role_id.*' => 'integer|exists:roles,id',
-            'permission_id' => 'required|array',
-            'permission_id.*' => 'integer|exists:permissions,id',
-        ]);
-
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-        ]);
-
-        $user->roles()->sync($request->role_id);
-        $user->permissions()->sync($request->permission_id);
-
+        $request->validated();
+        $user = $this->authRepository->create($request->all());
 
         return response()->json([
             'message' => 'User created successfully',
@@ -45,30 +30,22 @@ class AuthController extends Controller
         ]);
     }
 
-
-    public function login(Request $request)
+    public function login(LoginRequest $request)
     {
-        $request->validate([
-            'email' => 'required|string|email',
-            'password' => 'required|string',
-        ]);
+        $request->validated();
 
-        $credentials = $request->only('email', 'password');
-        $token = Auth::attempt($credentials);
+        $user = $this->authRepository->findByEmail($request->email);
 
-        if (!$token) {
+        if (!$user || !Hash::check($request->password, $user->password)) {
             return response()->json([
                 'message' => 'Unauthorized',
             ], 401);
         }
 
-        $role = Auth::user()->roles;
-        $permissios = Auth::user()->permissions;
+        $token = Auth::login($user);
 
         return response()->json([
-            'message' => 'Successfully login ',
-            // 'role' =>  $role,
-            // 'permissios' => $permissios,
+            'message' => 'Successfully login',
             'authorization' => [
                 'token' => $token,
                 'type' => 'bearer',
@@ -78,23 +55,17 @@ class AuthController extends Controller
 
     public function logout()
     {
-        Auth::logout();
+        $this->authRepository->logout();
+
         return response()->json([
             'message' => 'Successfully logged out',
         ]);
     }
 
-
-
     public function refresh()
     {
-        return response()->json([
-            'message' => 'Token refreshed successfully',
-            'user' => Auth::user(),
-            'authorisation' => [
-                'token' => Auth::refresh(),
-                'type' => 'bearer',
-            ]
-        ]);
+        $result = $this->authRepository->refresh();
+
+        return response()->json($result);
     }
 }

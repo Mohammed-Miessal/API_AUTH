@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
@@ -13,7 +12,7 @@ class UserController extends Controller
     public function __construct()
     {
         $this->middleware('auth:api');
-        $this->middleware('role:Super Admin,Admin');
+        $this->middleware('role:Super Admin,Admin', ['only' => ['ShowDetails']]);
     }
 
     public function index()
@@ -97,6 +96,21 @@ class UserController extends Controller
         $user->delete();
         return response()->json([
             'message' => 'User deleted successfully'
+        ]);
+    }
+
+    public function ShowDetails()
+    {
+        $user = auth()->user();
+        $name = auth()->user()->name;
+        $email = auth()->user()->email;
+
+        return response()->json([
+            'message' => 'User details',
+            'name' => $name,
+            'email' => $email,
+            'roles' => $user->roles()->pluck('name'),
+            'permissions' => $user->permissions()->pluck('name')
         ]);
     }
 }

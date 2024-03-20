@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class UpdateRoleRequest extends FormRequest
+class UpdateSubcategoryRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,8 +22,10 @@ class UpdateRoleRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
-            'name' => 'required|string|max:20|unique:roles,name,' . $this->role->id,
+            'name' => 'required|string',
+            'subcategory_code' => 'required|string',
+            'description' => 'required|string',
+            'category_id' => 'required|integer|exists:categories,id'
         ];
     }
 }

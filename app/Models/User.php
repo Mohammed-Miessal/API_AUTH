@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\HasPermissionsTrait;
 use PHPOpenSourceSaver\JWTAuth\Contracts\JWTSubject;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -11,7 +12,7 @@ use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable implements JWTSubject
 {
-    use HasApiTokens, HasFactory, Notifiable ;
+    use HasApiTokens, HasFactory, Notifiable,  HasPermissionsTrait;
 
     /**
      * The attributes that are mass assignable.
@@ -44,7 +45,7 @@ class User extends Authenticatable implements JWTSubject
         'password' => 'hashed',
     ];
 
-     /**
+    /**
      * Get the identifier that will be stored in the subject claim of the JWT.
      *
      * @return mixed
@@ -64,4 +65,14 @@ class User extends Authenticatable implements JWTSubject
         return [];
     }
 
+
+    // public function roles()
+    // {
+    //     return $this->belongsToMany(Role::class);
+    // }
+
+    // public function permissions()
+    // {
+    //     return $this->belongsToMany(Permission::class, 'permission_user');
+    // }
 }

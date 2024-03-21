@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\RoleController;
+use App\Http\Controllers\UnitController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\CategoryController;
@@ -32,6 +33,7 @@ Route::group(['middleware' => ['role:Super Admin,Admin', 'auth:api']], function 
     Route::resources(['role' => RoleController::class]);
     Route::resources(['permission' => PermissionController::class]);
     Route::resources(['user' => UserController::class]);
+    Route::resources(['unit' => UnitController::class]);
 });
 
 
